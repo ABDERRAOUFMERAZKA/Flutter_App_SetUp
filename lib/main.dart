@@ -4,28 +4,27 @@
 
 import 'package:flutter/material.dart';
 
-// This app is a stateful, it tracks the user's current choice.
-class BasicAppBarSample extends StatefulWidget {
+class TravelApp extends StatefulWidget {
   @override
-  _BasicAppBarSampleState createState() => _BasicAppBarSampleState();
+  _TravelAppState createState() => _TravelAppState();
 }
 
-class _BasicAppBarSampleState extends State<BasicAppBarSample> {
+class _TravelAppState extends State<TravelApp> {
   Choice _selectedChoice = choices[0]; // The app's "state".
 
   void _select(Choice choice) {
-    // Causes the app to rebuild with the new _selectedChoice.
     setState(() {
       _selectedChoice = choice;
     });
   }
-
+  final title = 'Traveling by';
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: const Text('Basic AppBar'),
+          backgroundColor: Colors.green,
+          title: Text(title),
           actions: <Widget>[
             // action button
             IconButton(
@@ -34,7 +33,6 @@ class _BasicAppBarSampleState extends State<BasicAppBarSample> {
                 _select(choices[0]);
               },
             ),
-            // action button
             IconButton(
               icon: Icon(choices[1].icon),
               onPressed: () {
@@ -72,18 +70,38 @@ class Choice {
 }
 
 const List<Choice> choices = const <Choice>[
-  const Choice(title: 'Car', icon: Icons.directions_car),
-  const Choice(title: 'Bicycle', icon: Icons.directions_bike),
-  const Choice(title: 'Boat', icon: Icons.directions_boat),
-  const Choice(title: 'Bus', icon: Icons.directions_bus),
   const Choice(title: 'Train', icon: Icons.directions_railway),
+  const Choice(title: 'Bus', icon: Icons.directions_bus),
+  const Choice(title: 'Bicycle', icon: Icons.directions_bike),
+  const Choice(title: 'Car', icon: Icons.directions_car),
+  const Choice(title: 'Boat', icon: Icons.directions_boat),
   const Choice(title: 'Walk', icon: Icons.directions_walk),
+  const Choice(title: 'Craft', icon: Icons.airplanemode_active),
 ];
 
-class ChoiceCard extends StatelessWidget {
+class ChoiceCard extends StatefulWidget {
   const ChoiceCard({Key key, this.choice}) : super(key: key);
 
   final Choice choice;
+
+  @override
+  BodyWidget createState() => new BodyWidget();
+}
+
+class BodyWidget extends State<ChoiceCard> {
+  String dep = '';
+  String dest = '';
+
+  BodyWidget({Key key, this.choice}) : super();
+  final Choice choice;
+
+  void _onChangeDep(String departure) {
+    setState(() => dep = departure);
+  }
+
+  void _onChangeDest(String destination) {
+    setState(() => dest = destination);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -95,8 +113,32 @@ class ChoiceCard extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            Icon(choice.icon, size: 128.0, color: textStyle.color),
-            Text(choice.title, style: textStyle),
+            new Container(
+                width: 250.0,
+                child: new TextField(
+
+                    decoration: new InputDecoration(
+                        hintText: 'From...',
+                        icon: new Icon(Icons.near_me)),
+                    autofocus: true,
+                    onChanged: _onChangeDep,
+                )
+            ),
+            new Container(
+                width: 250.0,
+                child: new TextField(
+                  decoration: new InputDecoration(
+                      hintText: 'To...',
+                      icon: new Icon(Icons.flag)),
+                  onChanged: _onChangeDest,
+                )
+            ),
+            new Container(
+              margin: const EdgeInsets.only(top: 40),
+              child: new Icon( Icons.airplanemode_active, size:60.0,color: Colors.lightGreen),
+            ),
+            Text(dep, style: textStyle),
+            Text(dest, style: textStyle),
           ],
         ),
       ),
@@ -105,5 +147,5 @@ class ChoiceCard extends StatelessWidget {
 }
 
 void main() {
-  runApp(BasicAppBarSample());
+  runApp(TravelApp());
 }
